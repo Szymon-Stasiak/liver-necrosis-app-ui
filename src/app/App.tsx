@@ -1,6 +1,6 @@
 import React from 'react';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import 'globalStyle.css';
+import './globalStyle.css';
 import NavBarAdder from "./components/NavigationBar/NavBarAdder";
 import {ROUTES} from "./utils/ROUTES";
 import Home from "./pages/Home";
