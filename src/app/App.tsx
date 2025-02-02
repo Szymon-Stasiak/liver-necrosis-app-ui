@@ -8,16 +8,13 @@ import CheckStage from "./pages/CheckStage";
 import PageNotFound from "./pages/PageNotFound";
 import Result from "./pages/Result";
 import {ApiResponseProvider} from "./ContexProvider";
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 
 function App() {
-
-
-
-
-
     return (
         <ApiResponseProvider>
             <BrowserRouter>
+                <ScrollToTop/>
                 <Routes>
                     <Route element={<NavBarAdder/>}>
                         <Route path={ROUTES.BASE} element={<Home/>}/>
