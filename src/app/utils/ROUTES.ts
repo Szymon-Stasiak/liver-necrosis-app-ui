@@ -1,6 +1,6 @@
 export enum ROUTES {
     BASE = '/',
-    HOME = '/Home',
+    HOME = '/home',
     CHECK_STAGE = '/check-stage',
     RESULT = '/result',
 }
