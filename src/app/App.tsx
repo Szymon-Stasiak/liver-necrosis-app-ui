@@ -6,6 +6,7 @@ import {ROUTES} from "./utils/ROUTES";
 import Home from "./pages/Home";
 import CheckStage from "./pages/CheckStage";
 import PageNotFound from "./pages/PageNotFound";
+import Result from "./pages/Result";
 
 function App() {
     return (
@@ -15,7 +16,7 @@ function App() {
                     <Route path={ROUTES.BASE} element={<Home/>}/>
                     <Route path={ROUTES.HOME} element={<Home/>}/>
                     <Route path={ROUTES.CHECK_STAGE} element={<CheckStage/>}/>
-                    <Route path={ROUTES.RESULTS} element={<PageNotFound/>}/>
+                    <Route path={ROUTES.RESULT} element={<Result/>}/>
                     <Route path="*" element={<PageNotFound/>}/>
                 </Route>
             </Routes>

@@ -13,6 +13,9 @@ import {
 } from '@mui/material';
 import {useTheme} from "@mui/material/styles";
 import {useState} from "react";
+import {sendBasicRequest, sendDetailedRequest} from "../components/RequestSenders/RequestSenders";
+import {useNavigate} from "react-router-dom";
+import {ROUTES} from "../utils/ROUTES";
 
 interface Field {
     label: string;
@@ -24,9 +27,11 @@ export default function CheckStage() {
     const theme = useTheme();
     const [isDetailed, setIsDetailed] = useState<boolean>(false);
     const [isHovered, setIsHovered] = useState(false);
+    const navigate = useNavigate();
+
 
     const basicFields: Field[] = [
-        {label: "Age [years]", type: "number"},
+        {label: "Age [days]", type: "number"},
         {label: "Edema", type: "select", options: [0, 1, 2]},
         {label: "Bilirubin [mg/dl]", type: "number"},
         {label: "Albumin [gm/dl]", type: "number"},
@@ -73,7 +78,21 @@ export default function CheckStage() {
 
     const handleCheckClick = () => {
         console.log('Checking with data:', inputValues);
+
+        if(isDetailed) {
+            sendDetailedRequest(inputValues).then((response) => {
+                console.log(response);
+                navigate(ROUTES.RESULT);
+            });
+        }else {
+            sendBasicRequest(inputValues).then((response) => {
+                console.log(response);
+                navigate(ROUTES.RESULT);
+            });
+        }
+
     };
+
 
     return (
         <Container maxWidth="md" sx={{textAlign: "left", mt: 5, bgcolor: theme.palette.background.default}}>
