@@ -7,20 +7,28 @@ import Home from "./pages/Home";
 import CheckStage from "./pages/CheckStage";
 import PageNotFound from "./pages/PageNotFound";
 import Result from "./pages/Result";
+import {ApiResponseProvider} from "./ContexProvider";
 
 function App() {
+
+
+
+
+
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route element={<NavBarAdder/>}>
-                    <Route path={ROUTES.BASE} element={<Home/>}/>
-                    <Route path={ROUTES.HOME} element={<Home/>}/>
-                    <Route path={ROUTES.CHECK_STAGE} element={<CheckStage/>}/>
-                    <Route path={ROUTES.RESULT} element={<Result/>}/>
-                    <Route path="*" element={<PageNotFound/>}/>
-                </Route>
-            </Routes>
-        </BrowserRouter>
+        <ApiResponseProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route element={<NavBarAdder/>}>
+                        <Route path={ROUTES.BASE} element={<Home/>}/>
+                        <Route path={ROUTES.HOME} element={<Home/>}/>
+                        <Route path={ROUTES.CHECK_STAGE} element={<CheckStage/>}/>
+                        <Route path={ROUTES.RESULT} element={<Result/>}/>
+                        <Route path="*" element={<PageNotFound/>}/>
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </ApiResponseProvider>
     );
 }
 

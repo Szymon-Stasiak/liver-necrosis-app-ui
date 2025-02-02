@@ -16,6 +16,7 @@ import {useState} from "react";
 import {sendBasicRequest, sendDetailedRequest} from "../components/RequestSenders/RequestSenders";
 import {useNavigate} from "react-router-dom";
 import {ROUTES} from "../utils/ROUTES";
+import {useApiResponse} from "../ContexProvider";
 
 interface Field {
     label: string;
@@ -28,6 +29,8 @@ export default function CheckStage() {
     const [isDetailed, setIsDetailed] = useState<boolean>(false);
     const [isHovered, setIsHovered] = useState(false);
     const navigate = useNavigate();
+    const { setApiResponse } = useApiResponse();
+
 
 
     const basicFields: Field[] = [
@@ -81,12 +84,12 @@ export default function CheckStage() {
 
         if(isDetailed) {
             sendDetailedRequest(inputValues).then((response) => {
-                console.log(response);
+                setApiResponse(response);
                 navigate(ROUTES.RESULT);
             });
         }else {
             sendBasicRequest(inputValues).then((response) => {
-                console.log(response);
+                setApiResponse(response);
                 navigate(ROUTES.RESULT);
             });
         }
