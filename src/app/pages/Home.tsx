@@ -1,9 +1,12 @@
 import React from "react";
 import {Container, Typography, Button, Card, CardContent} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
+import {useNavigate} from "react-router-dom";
+import {ROUTES} from "../utils/ROUTES";
 
 export default function Home() {
     const theme = useTheme();
+    const navigate = useNavigate();
 
     return (
         <Container maxWidth="md" sx={{textAlign: "left", mt: 5, bgcolor: theme.palette.background.default}}>
@@ -84,8 +87,8 @@ export default function Home() {
                     <Button
                         variant="contained"
                         color="primary"
-                        href="/check-stage"
                         sx={{mt: 3, py: 2, px: 4, fontSize: "1.2rem", width: "100%"}}
+                        onClick={() => navigate(ROUTES.CHECK_STAGE)}
                     >
                         Check Your Stage
                     </Button>
