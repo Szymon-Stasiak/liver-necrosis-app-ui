@@ -1,26 +1,78 @@
 import * as React from 'react';
-import {Box, Typography, Button, TextField, Container, Card, CardContent, Switch} from '@mui/material';
+import {
+    Box,
+    Typography,
+    Button,
+    TextField,
+    Container,
+    Card,
+    CardContent,
+    Switch,
+    MenuItem,
+    Tooltip
+} from '@mui/material';
 import {useTheme} from "@mui/material/styles";
 import {useState} from "react";
 
+interface Field {
+    label: string;
+    type: "number" | "select";
+    options?: number[];
+}
+
 export default function CheckStage() {
     const theme = useTheme();
-
-    const [inputFields, setInputFields] = useState<string[]>(['', '', '', '']);
     const [isDetailed, setIsDetailed] = useState<boolean>(false);
+    const [isHovered, setIsHovered] = useState(false);
+
+    const basicFields: Field[] = [
+        {label: "Age [years]", type: "number"},
+        {label: "Edema", type: "select", options: [0, 1, 2]},
+        {label: "Bilirubin [mg/dl]", type: "number"},
+        {label: "Albumin [gm/dl]", type: "number"},
+        {label: "Platelets [ml/1000]", type: "number"},
+        {label: "Prothrombin [s]", type: "number"}
+    ];
+
+    const detailedFields: Field[] = [
+        {label: "Age [days]", type: "number"},
+        {label: "Ascites", type: "select", options: [0, 1]},
+        {label: "Hepatomegaly", type: "select", options: [0, 1, 2]},
+        {label: "Spiders", type: "select", options: [0, 1]},
+        {label: "Edema", type: "select", options: [0, 1, 2]},
+        {label: "Bilirubin [mg/dl]", type: "number"},
+        {label: "Cholesterol [mg/dl]", type: "number"},
+        {label: "Albumin [gm/dl]", type: "number"},
+        {label: "Copper [ug/day]", type: "number"},
+        {label: "Platelets [ml/1000]", type: "number"},
+        {label: "Prothrombin [s]", type: "number"}
+    ];
+
+    const fields: Field[] = isDetailed ? detailedFields : basicFields;
+    const [inputValues, setInputValues] = useState<Record<string, string | number>>(
+        () => Object.assign({}, ...fields.map((f: Field) => ({[f.label]: ""})))
+    );
+    const [errors, setErrors] = useState<Record<string, boolean>>(
+        () => Object.assign({}, ...fields.map((f: Field) => ({[f.label]: false})))
+    );
 
     const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsDetailed(event.target.checked);
-
-        if (event.target.checked) {
-            setInputFields(['', '', '', '', '', '', '', '']); // 8 fields for Detailed
-        } else {
-            setInputFields(['', '', '', '']); // 4 fields for Basic
-        }
+        setInputValues(Object.assign({}, ...((event.target.checked ? detailedFields : basicFields).map((f: Field) => ({[f.label]: ""})))));
+        setErrors(Object.assign({}, ...((event.target.checked ? detailedFields : basicFields).map((f: Field) => ({[f.label]: false})))));
     };
 
+    const handleInputChange = (label: string, value: string | number) => {
+        setInputValues(prev => ({...prev, [label]: value === "" ? "" : value}));
+        setErrors(prev => ({...prev, [label]: value === ""}));
+
+    };
+
+    // @ts-ignore
+    const isFormValid = Object.values(inputValues).every(value => value !== "");
+
     const handleCheckClick = () => {
-        console.log('Checking with data:', inputFields);
+        console.log('Checking with data:', inputValues);
     };
 
     return (
@@ -34,18 +86,18 @@ export default function CheckStage() {
                     <Box sx={{display: 'flex', justifyContent: 'center', marginBottom: 4}}>
                         <Typography variant="h6">Basic</Typography>
                         <Switch
-                            checked={isDetailed} // If true, it's Detailed, else Basic
+                            checked={isDetailed}
                             onChange={handleSwitchChange}
                             sx={{
                                 '& .MuiSwitch-thumb': {
-                                    backgroundColor: 'blue',
+                                    backgroundColor: 'secondary.main',
                                 },
                                 '& .MuiSwitch-track': {
                                     backgroundColor: 'lightblue',
                                 },
                                 '& .Mui-checked': {
                                     '& .MuiSwitch-thumb': {
-                                        backgroundColor: 'green',
+                                        backgroundColor: 'primary.main',
                                     },
                                     '& + .MuiSwitch-track': {},
                                 },
@@ -53,33 +105,56 @@ export default function CheckStage() {
                         />
                         <Typography variant="h6">Detailed</Typography>
                     </Box>
-
                     <Box sx={{display: 'flex', flexDirection: 'column', gap: 3}}>
-                        {inputFields.map((field, index) => (
-                            <TextField
-                                key={index}
-                                label={`Field ${index + 1}`}
-                                variant="outlined"
-                                value={field}
-                                onChange={(e) => {
-                                    const newFields = [...inputFields];
-                                    newFields[index] = e.target.value;
-                                    setInputFields(newFields);
-                                }}
-                                fullWidth
-                            />
+                        {fields.map((field, index) => (
+                            field.type === "select" ? (
+                                <TextField
+                                    key={index}
+                                    select
+                                    label={field.label}
+                                    value={inputValues[field.label]}
+                                    onChange={(e) => handleInputChange(field.label, Number(e.target.value))}
+                                    fullWidth
+                                    error={errors[field.label]}
+                                    helperText={errors[field.label] ? "This field is required" : ""}
+                                >
+                                    {field.options?.map(option => (
+                                        <MenuItem key={option} value={option}>{option}</MenuItem>
+                                    ))}
+                                </TextField>
+                            ) : (
+                                <TextField
+                                    key={index}
+                                    label={field.label}
+                                    type="number"
+                                    variant="outlined"
+                                    value={inputValues[field.label]}
+                                    onChange={(e) => handleInputChange(field.label, e.target.value === "" ? "" : Number(e.target.value))}
+                                    fullWidth
+                                    error={errors[field.label]}
+                                    helperText={errors[field.label] ? "This field is required" : ""}
+                                />
+                            )
                         ))}
                     </Box>
 
-                    <Box sx={{marginTop: 4, display: 'flex', justifyContent: 'center'}}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            sx={{padding: '12px 24px'}}
-                            onClick={handleCheckClick}
+                    <Box onMouseEnter={() => {setIsHovered(true);}} onMouseLeave={() => {setIsHovered(false);}} sx={{marginTop: 4, display: 'flex', justifyContent: 'center'}}>
+                        <Tooltip
+                            title="All fields are required"
+                            open={!isFormValid && isHovered}
+                            arrow
                         >
-                            Check your stage
-                        </Button>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                sx={{mt: 3, py: 2, px: 4, fontSize: "1.2rem", width: "100%"}}
+                                onClick={handleCheckClick}
+
+                                disabled={!isFormValid}
+                            >
+                                Check your stage
+                            </Button>
+                        </Tooltip>
                     </Box>
                 </CardContent>
             </Card>
